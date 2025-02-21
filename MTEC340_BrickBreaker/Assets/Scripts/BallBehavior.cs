@@ -9,28 +9,46 @@ public class BallBehavior : MonoBehaviour
     private int _xDir;
     private float XLimit = 9.8f;
     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private AudioSource _source;
+    [SerializeField] private AudioClip _wallHit;
+    [SerializeField] private AudioClip _paddleHit;
+    
     void Start()
     {
 
         // set _yDir negative so ball falls down;
         _yDir = -1;
-        _xDir = 0;
+        _xDir = 1;
+        
+        _source = GetComponent<AudioSource>();
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
-        if (transform.position.y >= YLimit || transform.position.y <= -YLimit) 
+        if (Mathf.Abs(transform.position.y) >= YLimit)  
         {
             _yDir *= -1;  
+            _source.clip = _wallHit;
+            _source.Play();
         }
 
-        if (transform.position.x >= XLimit || transform.position.x <= -XLimit)
+        if (Mathf.Abs(transform.position.x) >= XLimit) 
         {
             _xDir *= -1;
+            _source.clip = _wallHit;
+            _source.Play();
         }
         
         transform.position += new Vector3 (XSpeed * _xDir, YSpeed * _yDir, 0) * Time.deltaTime;
+    }
+    
+    private void OnCollisionEnter2D(Collision2D other) // if using box collider 2D, use 2D notification
+    {
+        if (other.gameObject.CompareTag("Paddle"))
+        {
+            _yDir *= -1;
+            _source.clip = _paddleHit;
+            _source.Play();
+        }
     }
 }
