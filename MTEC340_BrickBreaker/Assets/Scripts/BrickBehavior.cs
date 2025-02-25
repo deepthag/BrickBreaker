@@ -19,8 +19,6 @@ public class BrickBehavior : MonoBehaviour
         {
             Debug.Log("Collision!");
             Destroy(gameObject);
-            _source.clip = _brickBreak;
-            _source.Play();
         }
     }
 }

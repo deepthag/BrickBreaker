@@ -50,5 +50,15 @@ public class BallBehavior : MonoBehaviour
             _source.clip = _paddleHit;
             _source.Play();
         }
+        
+        if (other.gameObject.CompareTag("Boundary X"))
+        {
+            _xDir *= -1;
+        }
+        
+        if (other.gameObject.CompareTag("Boundary Y"))
+        {
+            _yDir *= -1;
+        }
     }
 }
