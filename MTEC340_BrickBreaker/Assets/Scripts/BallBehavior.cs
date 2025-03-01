@@ -25,22 +25,34 @@ public class BallBehavior : MonoBehaviour
     
     void Update()
     {
-        if (Mathf.Abs(transform.position.y) >= YLimit)  
+        if (GameBehavior.Instance.State == Utilities.GameplayState.Play)
         {
-            _yDir *= -1;  
-            _source.clip = _wallHit;
-            _source.Play();
-        }
+            if (Mathf.Abs(transform.position.y) >= YLimit)
+            {
+                transform.position = new Vector3(
+                    transform.position.x, // X
+                    Mathf.Sign(transform.position.y) * YLimit, // Y
+                    transform.position.z // Z
+                );
 
-        if (Mathf.Abs(transform.position.x) >= XLimit) 
-        {
-            _xDir *= -1;
-            _source.clip = _wallHit;
-            _source.Play();
-        }
+                _yDir *= -1;
+            }
         
-        transform.position += new Vector3 (XSpeed * _xDir, YSpeed * _yDir, 0) * Time.deltaTime;
+            if (Mathf.Abs(transform.position.x) >= XLimit)
+            {
+                transform.position = new Vector3(
+                    Mathf.Sign(transform.position.y) * YLimit, // X
+                    transform.position.y, // Y
+                    transform.position.z // Z
+                );
+
+                _yDir *= -1;
+            }
+        
+            transform.position += new Vector3 (XSpeed * _xDir, YSpeed * _yDir, 0) * Time.deltaTime;
+        }
     }
+    
     
     private void OnCollisionEnter2D(Collision2D other) // if using box collider 2D, use 2D notification
     {
@@ -54,11 +66,15 @@ public class BallBehavior : MonoBehaviour
         if (other.gameObject.CompareTag("Boundary X"))
         {
             _xDir *= -1;
+            _source.clip = _wallHit;
+            _source.Play();
         }
         
         if (other.gameObject.CompareTag("Boundary Y"))
         {
             _yDir *= -1;
+            _source.clip = _wallHit;
+            _source.Play();
         }
     }
 }
